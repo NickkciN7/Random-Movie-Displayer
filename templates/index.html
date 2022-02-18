@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='style.css' ) }} />
+</head>
+
+<body>
+    <div class = "center_div">
+        <h1><u>Random Movie Displayer!</u></h1>
+        <h2>{{movie_title}}</h2>
+        <h5>
+            {% if tagline == "" %} 
+                No Tagline
+            {% else %}
+                "{{tagline}}" 
+            {% endif %}
+            
+        </h5>
+        <h6>Genres: 
+            {% for i in range(genres_length) %}
+                {% if i == genres_length-1 %} 
+                    {{genres[i]}}
+                {% else %}
+                    {{genres[i]}}, 
+                {% endif %}    
+            {% endfor %}
+        </h6>
+        <img src = {{image_url}}>
+        <br>
+        <a href = {{wiki_url}} > Click Here for Wikipedia Page</a>
+    </div>
+</body>
+
+</html>

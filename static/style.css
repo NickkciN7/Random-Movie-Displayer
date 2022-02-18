@@ -1,0 +1,14 @@
+body {
+    background-color: #4d4dff;
+    text-align: center; /*center div inside*/
+}
+
+.center_div {
+    display: inline-block;
+    text-align: center; /*center stuff inside*/
+    background-color: #8080ff;
+    padding-left: 10px; /*create padding between walls of div and the contents of the div*/
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-radius: 25px; /*rounded corners*/
+}
