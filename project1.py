@@ -8,25 +8,58 @@ import random
 
 from flask import Flask, render_template
 import flask_login
+# from flask_sqlalchemy import SQLAlchemy
 from tmdb import get_movie_data
 from wiki import get_wiki_link
 from dotenv import load_dotenv, find_dotenv
+
+
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-app.secret_key = os.getenv('SECRET_KEY')
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
+# db = SQLAlchemy(app)
+
+# app.secret_key = os.getenv('SECRET_KEY')
+# login_manager = flask_login.LoginManager()
+# login_manager.init_app(app)
 
 
-class User(flask_login.UserMixin):
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key = True)
+#     username = db.Column(db.String(120))
+
+#     def is_active(self):
+#         return True
+
+#     def is_authenticated(self):
+#         return True
+
+#     def is_anonymous(self):
+#         return False
+
+#     def get_id(self):
+#         try:
+#             return str(self.id)
+#         except AttributeError:
+#             raise NotImplementedError('No `id` attribute - override `get_id`')
+
+
+# class User(flask_login.UserMixin):
+#     def get_id(self):
+#         return super().get_id()
     
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.get(user_id)
+
+class UserPosts(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    userid = db.Column(db.Integer)
+    comment = db.Column(db.String(300), nullable=True)
+    rating = db.Column(db.Integer, nullable=True)
 
 
 #Forrest Gump, Cheaper by the Dozen, Deck Dogz
