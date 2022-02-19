@@ -7,18 +7,34 @@ import os
 import random
 
 from flask import Flask, render_template
+import flask_login
 from tmdb import get_movie_data
 from wiki import get_wiki_link
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+app.secret_key = os.getenv('SECRET_KEY')
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+
+class User(flask_login.UserMixin):
+    
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
 
 #Forrest Gump, Cheaper by the Dozen, Deck Dogz
 movie_ids = [13, 11007, 26023]
 
 
 @app.route('/')
-def hello_world():
+def index():
     """random_id gets a random index of the movie lists, and this
     id is used in the get_movie_data function from TMDB.py in order
     to get movie information and an image url. The title of the movie is
@@ -26,6 +42,7 @@ def hello_world():
     function from WIKI.py. Finally the index.html page is rendered with
     this movie information passed to it to fill out the webpage"""
 
+    
     random_id = random.randint(0, len(movie_ids)-1)
     movie_data = get_movie_data(movie_ids[random_id])
     # movie_data = get_movie_data(3)
