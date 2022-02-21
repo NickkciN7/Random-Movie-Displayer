@@ -6,9 +6,10 @@ app.run to actually start running the webpage."""
 import os
 import random
 
+import flask
 from flask import Flask, render_template
 import flask_login
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from tmdb import get_movie_data
 from wiki import get_wiki_link
 from dotenv import load_dotenv, find_dotenv
@@ -17,49 +18,36 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
+
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+# Point SQLAlchemy to your Heroku database
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# Gets rid of a warning
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
-# app.secret_key = os.getenv('SECRET_KEY')
-# login_manager = flask_login.LoginManager()
-# login_manager.init_app(app)
-
-
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key = True)
-#     username = db.Column(db.String(120))
-
-#     def is_active(self):
-#         return True
-
-#     def is_authenticated(self):
-#         return True
-
-#     def is_anonymous(self):
-#         return False
-
-#     def get_id(self):
-#         try:
-#             return str(self.id)
-#         except AttributeError:
-#             raise NotImplementedError('No `id` attribute - override `get_id`')
+app.secret_key = os.getenv('SECRET_KEY')
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 
-# class User(flask_login.UserMixin):
-#     def get_id(self):
-#         return super().get_id()
-    
+# from models import User
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.get(user_id)
-
-class UserPosts(db.Model):
+class User(flask_login.UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    userid = db.Column(db.Integer)
-    comment = db.Column(db.String(300), nullable=True)
-    rating = db.Column(db.Integer, nullable=True)
+    username = db.Column(db.String(120))
+    
+db.create_all()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id) #returns the User object with that id
+
+#redirect to login page if not signed in
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return flask.redirect(flask.url_for("login"))
 
 
 #Forrest Gump, Cheaper by the Dozen, Deck Dogz
@@ -67,6 +55,7 @@ movie_ids = [13, 11007, 26023]
 
 
 @app.route('/')
+@flask_login.login_required
 def index():
     """random_id gets a random index of the movie lists, and this
     id is used in the get_movie_data function from TMDB.py in order
@@ -90,6 +79,16 @@ def index():
         image_url = movie_data["image_url"],
         wiki_url = wiki_url
     )
+
+
+@app.route('/login')
+def login():
+    return "<h1>welcome to the login page</h1>"
+
+@app.route('/signup') 
+def signup():
+    pass
+
 
 app.run(
     host=os.getenv('IP', '0.0.0.0'),
