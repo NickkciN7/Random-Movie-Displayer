@@ -84,10 +84,7 @@ https://project1-dominickdileo.herokuapp.com/
     To put on Heroku, you must type "heroku login -i" to login. Then "heroku create" to make an app. Then "git push heroku main" to push your files onto heroku. You must put you api key in the settings -> config of your app on heroku's website since the .env file is not pushed. After this, just go on the url for your app and it should work.
 
 # Technical Issues I Encounterd
-1. The genres in the response from the get request in my TMDB.py file were not simply a list of genres. It was a dictionary of genres and also included an id. To just get the genre names, I looped through the dictionary and appended the name of each genre to a separate list. This list of genres was returned with the other movie information like the title
-2. I tried to display the genres with comma separators. But the last genre would have a comma too. So I had to put in a if else statement in the html file to see if the genre was the last genre, and if it was, do not add a comma
-3. I kept trying to make searches using the base url "https://www.mediawiki.org/w/api.php", but I would get weird results that had nothing to do with movies. After browsing various stackoverflow pages, I visited https://stackoverflow.com/questions/24806962/get-an-article-summary-from-the-mediawiki-api and noticed that the top answer had "https://en.wikipedia.org/w/api.php" as the base URL. After I started using this base url, I got the movie result from a search.
-4. Though what I did for 3 gave me the correct movie, it did not give me the url. After a while I found out I needed to use prop = info and inprop = url for parameters. But I could not use these in combination with the previous request. I needed to use the pageids parameter in combination with the prop. Using the pageid from the previous request response as the pageid parameter, I was able to get json data that contained the url finally.
+1. circular import when trying to import models.py
 
 # Current Problems and Improvements I Would Make
 ## Problem

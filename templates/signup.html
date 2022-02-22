@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='style.css' ) }} />
+</head>
+
+<body>
+    <div class = "center_div">
+        <h2>Signup</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <b class="red">{{ message }}</b>
+                {% endfor %}
+                <br><br>
+            {% endif %}
+        {% endwith %}
+        <form method = "POST" action="/signup">
+            <input type="text" name = "username" value="Enter Username Here">
+            <input type="submit" value="SIGNUP" name="submit">
+        </form>
+    </div>
+    
+
+</body>
+
+</html>

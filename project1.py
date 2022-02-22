@@ -10,6 +10,7 @@ import flask
 from flask import Flask, render_template
 import flask_login
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import false
 from tmdb import get_movie_data
 from wiki import get_wiki_link
 from dotenv import load_dotenv, find_dotenv
@@ -34,7 +35,7 @@ login_manager.init_app(app)
 
 # from models import User
 
-class User(flask_login.UserMixin, db.Model):
+class profile(flask_login.UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(120))
     
@@ -42,7 +43,7 @@ db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id) #returns the User object with that id
+    return profile.query.get(user_id) #returns the User object with that id
 
 #redirect to login page if not signed in
 @login_manager.unauthorized_handler
@@ -81,13 +82,49 @@ def index():
     )
 
 
-@app.route('/login')
+@app.route('/login', methods = ["GET", "POST"])
 def login():
-    return "<h1>welcome to the login page</h1>"
+    if (flask.request.method == "POST"):
+        username_form = flask.request.form["username"]
+        user_query = profile.query.filter_by(username=username_form).first()
+        if user_query is None:
+            flask.flash("Username Not Found")
+        else:
+            flask_login.login_user(user_query)
+            # flask.flash("you signed in!")
+            return flask.redirect(flask.url_for("index"))
+    return render_template(
+        "login.html"
+    )
 
-@app.route('/signup') 
+
+@app.route('/signup', methods = ["GET", "POST"]) 
 def signup():
-    pass
+    if (flask.request.method == "POST"):
+        username_form = flask.request.form["username"]
+        user_query = profile.query.filter_by(username=username_form).first()
+        if user_query is None:
+            #user name not taken so make new profile
+            new_profile = profile(username = username_form) 
+            db.session.add(new_profile)
+            db.session.commit()
+            flask_login.login_user(new_profile)
+            return flask.redirect(flask.url_for("index"))
+        else:
+            flask.flash("Username Already Taken")
+
+    return render_template(
+        "signup.html"
+    )
+
+
+@app.route('/logout', methods = ["GET", "POST"]) 
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    flask.flash("Successfully Logged Out")
+    return flask.redirect(flask.url_for("login"))
+
 
 
 app.run(

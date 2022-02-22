@@ -12,3 +12,11 @@ body {
     padding-bottom: 10px;
     border-radius: 25px; /*rounded corners*/
 }
+
+.error_color {
+    background-color: green;
+}
+
+.red {
+    color: red;
+}
