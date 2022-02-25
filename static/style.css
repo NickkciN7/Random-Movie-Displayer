@@ -11,6 +11,7 @@ body {
     padding-right: 10px;
     padding-bottom: 10px;
     border-radius: 25px; /*rounded corners*/
+    width: 700px;
 }
 
 .error_color {
@@ -19,4 +20,38 @@ body {
 
 .red {
     color: red;
+}
+
+.comment_div {
+    border-radius: 25px;
+    padding-left: 5px; 
+    padding-right: 5px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-style: groove; 
+    border-width: 2px;
+    border-color: #4d4dff;
+    position: relative;
+    width: 95%;
+    height: 100px;
+}
+
+.top_left {
+    /* position: absolute;
+    top: 3%;
+    left: 3%; */
+    float: left;
+    text-align: left;
+    font-size: 0.65em;
+    font: bold;
+}
+
+.comment_text_div {
+    clear: both;
+    overflow: auto;
+    height: 50%;
+}
+
+.smallhr {
+    width: 25%;
 }

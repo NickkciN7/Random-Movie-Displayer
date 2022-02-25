@@ -85,7 +85,7 @@ https://project1-dominickdileo.herokuapp.com/
 
 # Technical Issues I Encounterd
 1. circular import when trying to import models.py
-
+2. called a table user which is preserved keyword
 # Current Problems and Improvements I Would Make
 ## Problem
     The center div containing all the content widens to fit the content. So if the tagline is really long, then the center div will expand a lot. I want to make the center div have a max width so regardless of the tagline length, the div looks the same. The tagline should instead wrap to the next line.
