@@ -166,3 +166,6 @@ on discord and Mr. Martin and a student replied telling me its a reserved keywor
 
     Another Add a small snippet of information from the wikipedia article too, so 
     that there is a brief description of the movie.
+
+# Stretch features
+    I'm not sure if this counts, but my code gets the average of all ratings for the movie and shows the average rating on the website.
