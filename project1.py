@@ -1,3 +1,4 @@
+# pylint: disable=C0103,C0115,E1101,R0903
 """This python file is the main file run that brings together all the
 other files to make a webpage. It calls functions from the other python
 files and passes information to a html page. It then at the end calls
@@ -11,10 +12,9 @@ from flask import Flask, render_template, session
 import flask_login
 from flask_login import current_user, login_required
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import false
+from dotenv import load_dotenv, find_dotenv
 from tmdb import get_movie_data
 from wiki import get_wiki_link
-from dotenv import load_dotenv, find_dotenv
 
 
 load_dotenv(find_dotenv())
@@ -24,6 +24,12 @@ app = Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 # Point SQLAlchemy to your Heroku database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+# because heroku's DATABASE_URL config variable can't be overwritten
+# on their site, change it here
+if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ].replace("postgres://", "postgresql://")
 # Gets rid of a warning
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -61,12 +67,13 @@ db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
-    return profile.query.get(user_id)  # returns the User object with that id
+    """returns the User object with that id"""
+    return profile.query.get(user_id)
 
 
-# redirect to login page if not signed in
 @login_manager.unauthorized_handler
 def unauthorized_callback():
+    """redirect to login page if not signed in"""
     return flask.redirect(flask.url_for("login"))
 
 
@@ -92,9 +99,11 @@ def index():
     else:
         # user just tried to comment or rate, so the current movie id should be the same as before
         current_movie_id = session["movie_id"]
-    # reset this session variable so if user reloads page without commenting or rating, a new random movie id is chsoen
+    # reset this session variable so if user reloads page without
+    # commenting or rating, a new random movie id is chsoen
     session["posted"] = "false"
-    # store movieid in sessions so other routes can access for storing a comment/rating in the database
+    # store movieid in sessions so other routes can access
+    # for storing a comment/rating in the database
     session["movie_id"] = current_movie_id
     movie_data = get_movie_data(current_movie_id)
     wiki_url = get_wiki_link(movie_data["title"])
@@ -110,8 +119,10 @@ def index():
     # print(comment_info.column_descriptions)
     # print(comment_info.statement)
     # for row in comment_info:
-    #     #row.rating instead of row.rating.rating, probably does not need to specify table name because in the sqlalchemy query, rating.rating is already specified?
-    #     print(str(row.comment.userid) + " " + row.username + " " + str(row.rating) + " " + str(row.comment.movieid) + " " + row.comment.comment + " ")
+    #     #row.rating instead of row.rating.rating, probably does not need to specify table
+    #      name because in the sqlalchemy query, rating.rating is already specified?
+    #     print(str(row.comment.userid) + " " + row.username + " " + str(row.rating) + " " +
+    #           str(row.comment.movieid) + " " + row.comment.comment + " ")
 
     # get user rating
     user_rating_query = rating.query.filter_by(
@@ -151,6 +162,8 @@ def index():
 @app.route("/rating", methods=["GET", "POST"])
 @login_required
 def rating_post():
+    """Deletes old rating if exists, posts a new rating, then redirect to main page"""
+
     if flask.request.method == "POST":
         session["posted"] = "true"
 
@@ -167,10 +180,15 @@ def rating_post():
         db.session.commit()
         return flask.redirect(flask.url_for("index"))
 
+    return flask.redirect(flask.url_for("index"))
+
 
 @app.route("/comment", methods=["GET", "POST"])
 @login_required
 def comment_post():
+    """Posts a new comment then redirect to main page. If comment is unchanged from initial text,
+    empty, or there is no rating from user yet, a warning is shown and no comment is posted"""
+
     if flask.request.method == "POST":
         session["posted"] = "true"
         if session.get("has_rating", None) == "false":
@@ -192,9 +210,14 @@ def comment_post():
         db.session.commit()
         return flask.redirect(flask.url_for("index"))
 
+    return flask.redirect(flask.url_for("index"))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Checks if username is associated with a profile,
+    login that user if there is, then redirect to main page."""
+
     if flask.request.method == "POST":
         session["posted"] = "false"
         username_form = flask.request.form["username"]
@@ -205,11 +228,15 @@ def login():
             flask_login.login_user(user_query)
             # flask.flash("you signed in!")
             return flask.redirect(flask.url_for("index"))
+
     return render_template("login.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    """Creates new profile if the username is not taken yet,
+    then logs in the user, then redirects to the main page"""
+
     if flask.request.method == "POST":
         session["posted"] = "false"
         username_form = flask.request.form["username"]
@@ -221,8 +248,7 @@ def signup():
             db.session.commit()
             flask_login.login_user(new_profile)
             return flask.redirect(flask.url_for("index"))
-        else:
-            flask.flash("Username Already Taken")
+        flask.flash("Username Already Taken")
 
     return render_template("signup.html")
 
@@ -230,6 +256,7 @@ def signup():
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
+    """Logs user out, then redirects to login page"""
     flask_login.logout_user()
     flask.flash("Successfully Logged Out")
     return flask.redirect(flask.url_for("login"))
