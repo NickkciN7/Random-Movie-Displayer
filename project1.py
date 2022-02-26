@@ -91,14 +91,14 @@ def index():
     function from WIKI.py. Finally the index.html page is rendered with
     this movie information passed to it to fill out the webpage"""
 
-    current_movie_id = 11007
+    # current_movie_id = 11007
     # user did not just try to post a comment or rate, so pick a random movie
-    # if not session.get("posted", None) == "true":
-    #     random_id = random.randint(0, len(movie_ids) - 1)
-    #     current_movie_id = movie_ids[random_id]
-    # else:
-    #     # user just tried to comment or rate, so the current movie id should be the same as before
-    #     current_movie_id = session["movie_id"]
+    if not session.get("posted", None) == "true":
+        random_id = random.randint(0, len(movie_ids) - 1)
+        current_movie_id = movie_ids[random_id]
+    else:
+        # user just tried to comment or rate, so the current movie id should be the same as before
+        current_movie_id = session["movie_id"]
     # reset this session variable so if user reloads page without
     # commenting or rating, a new random movie id is chsoen
     session["posted"] = "false"
