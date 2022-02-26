@@ -55,3 +55,23 @@ body {
 .smallhr {
     width: 25%;
 }
+
+.small_margin {
+    margin: 2px;
+}
+
+.tagline_margin {
+    margin-top: 0px;
+}
+
+.welcome {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    text-align: center; /*center stuff inside*/
+    background-color: #8080ff;
+    padding-left: 10px; /*create padding between walls of div and the contents of the div*/
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-radius: 25px; /*rounded corners*/
+}
