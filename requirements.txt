@@ -1,7 +1,6 @@
 flask
 requests
 python-dotenv
-postgresql
 psycopg2-binary
 Flask-SQLAlchemy==2.1
 flask-login
