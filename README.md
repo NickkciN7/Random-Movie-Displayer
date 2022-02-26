@@ -1,13 +1,13 @@
 # Heroku URL
 https://project1-dominickdileo.herokuapp.com/
 # Commit History
-    I copied my mielstone1 folder locally to work on milestone2 there, deleted the .git folder in the new directory, and re initialized with git init. This was then pushed to 
-    this remote repository. So there are no commits from milestone 1 here. Mr. Martin said this is ok on discord. Here is a link to milestone 1:
-    https://github.com/csc4350-sp22/project1-ddileo2
+    I copied my milestone1 folder locally to work on milestone2 there, deleted the .git folder in the new directory, and re-initialized with git init. This was then pushed to 
+    this remote repository. So there are no commits from milestone 1 here. Mr. Martin said this is ok on discord here https://discord.com/channels/928733838715289640/942873026083561513/945494866329227264
+    Here is a link to milestone 1: https://github.com/csc4350-sp22/project1-ddileo2
 # Detailing How This Project Works
 ## General
     This project is a webpage that makes use of the Flask framework to run. Everytime the page is refreshed it will display a different 
-    random movie's information, a picuture, and a wikipedia article link for the movie.
+    random movie's information, a picture, and a wikipedia article link for the movie.
 ## APIS
     I make use of APIs from The Movie Database(TMDB) and Wikipedia(Wiki). For TMDB, I used the Movies section of the 
     API to search for a movie based on movie_id. Using the poster_path info from the previous get request and getting 
@@ -35,7 +35,7 @@ https://project1-dominickdileo.herokuapp.com/
 
     5 addition routes now: rating, comment, login, signup, and logout
     main page the / route:
-        now does a bunch of querys with sqlalchemy, such as getting all the comments and ratings for a particualar movie and passes that information to the index.html to populate information on the webpage.
+        Now does a bunch of querys with sqlalchemy, such as getting all the comments and ratings for a particualar movie and passes that information to the index.html to populate information on the webpage.
     rating:
         Deletes old rating if exists, posts a new rating, then redirect to main
         page. Uses the sqlaclchemy library to interact with the database
@@ -139,10 +139,11 @@ https://project1-dominickdileo.herokuapp.com/
 
 # Technical Issues I Encounterd
 1. I tried to put all the database table classes in a separate python file called models.py. But I would get 
-circular import errors when trying to import into project1.py since the models.py file also imported from project1.py. In the end my project does not use this models.py file and just has it in the main project1.py file. Mr. Martin said this is ok too.
+circular import errors when trying to import into project1.py since the models.py file also imported from project1.py. In the end my project does not use this models.py file and just has the 
+classes in the main project1.py file. Mr. Martin said this is ok too.
 2. I did not understand what the user class was supposed to be for flask login. I tried to just have it inherit from UserMixin like the documentation said, but according to the teacher,
-it was actually supposed to inherit from db.model and is a table for database too. So after not making progress for a while I finally got it all working when he told me that. Another thing I did not understand was what the  user_loader callback did in the documentation. it said return User.get(user_id), so I was trying to add a .get function to my user class before the teacher 
-explained what the user class is. Based on what he said and the other example link for flask login provided in the milestone2 instructions. I finally understood that this line return User.get(user_id) actually queries the database for the user with user_id as its id. So I did not need to add a .get function
+it was actually supposed to inherit from db.model and is a table for the database too. So after not making progress for a while I finally got it all working when he told me that. Another thing I did not understand was what the user_loader callback did in the documentation. It did return User.get(user_id), so I was trying to add a .get function to my user class before the 
+teacher explained what the user class is. Based on what he said and the other example link for flask login provided in the milestone2 instructions. I finally understood that this line return User.get(user_id) actually queries the database for the user with user_id as its id. So I did not need to add a .get function
 3. I called a table user which is reserved keyword. So whenever I tried to run psql queries from the terminal after typing heroku pg:psql, I would run into issues. I asked about it
 on discord and Mr. Martin and a student replied telling me its a reserved keyword. So I dropped the table from the database and changed the name to profile instead, which is not reserved.
 
