@@ -33,6 +33,12 @@ if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
 # Gets rid of a warning
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+bp = flask.Blueprint(
+    "bp",
+    __name__,
+    template_folder="./static/react",
+)
+
 db = SQLAlchemy(app)
 
 app.secret_key = os.getenv("SECRET_KEY")
@@ -145,7 +151,7 @@ def index():
         average_rating = ratings_sum / all_ratings.count()
 
     return render_template(
-        "index.html",
+        "mainpage.html",
         movie_title=movie_data["title"],
         tagline=movie_data["tagline"],
         genres=movie_data["genres"],
@@ -213,6 +219,14 @@ def comment_post():
     return flask.redirect(flask.url_for("index"))
 
 
+@bp.route("/commentsandratings")
+@login_required
+def commentsandratings():
+    # NB: DO NOT add an "index.html" file in your normal templates folder
+    # Flask will stop serving this React page correctly
+    return flask.render_template("index.html")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Checks if username is associated with a profile,
@@ -261,6 +275,8 @@ def logout():
     flask.flash("Successfully Logged Out")
     return flask.redirect(flask.url_for("login"))
 
+
+app.register_blueprint(bp)
 
 app.run(
     host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), debug=True

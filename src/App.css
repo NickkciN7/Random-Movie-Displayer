@@ -1,38 +1,77 @@
-.App {
-  text-align: center;
+body {
+  background-color: #4d4dff;
+  text-align: center; /*center div inside*/
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.center_div {
+  display: inline-block;
+  text-align: center; /*center stuff inside*/
+  background-color: #8080ff;
+  padding-left: 10px; /*create padding between walls of div and the contents of the div*/
+  padding-right: 10px;
+  padding-bottom: 10px;
+  border-radius: 25px; /*rounded corners*/
+  width: 700px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.error_color {
+  background-color: green;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.red {
+  color: red;
 }
 
-.App-link {
-  color: #61dafb;
+.comment_div {
+  border-radius: 25px;
+  padding-left: 5px; 
+  padding-right: 5px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-style: groove; 
+  border-width: 2px;
+  border-color: #4d4dff;
+  position: relative;
+  width: 95%;
+  height: 100px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.top_left {
+  /* position: absolute;
+  top: 3%;
+  left: 3%; */
+  float: left;
+  text-align: left;
+  font-size: 0.65em;
+  font: bold;
+}
+
+.comment_text_div {
+  clear: both;
+  overflow: auto;
+  height: 50%;
+}
+
+.smallhr {
+  width: 25%;
+}
+
+.small_margin {
+  margin: 2px;
+}
+
+.tagline_margin {
+  margin-top: 0px;
+}
+
+.welcome {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  text-align: center; /*center stuff inside*/
+  background-color: #8080ff;
+  padding-left: 10px; /*create padding between walls of div and the contents of the div*/
+  padding-right: 10px;
+  padding-bottom: 10px;
+  border-radius: 25px; /*rounded corners*/
 }
