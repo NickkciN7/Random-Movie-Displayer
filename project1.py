@@ -10,6 +10,7 @@ import random
 import flask
 from flask import Flask, render_template, session
 import flask_login
+import json
 from flask_login import current_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
@@ -174,7 +175,10 @@ def rating_post():
         session["posted"] = "true"
 
         rating_form = flask.request.form["rating"]
-        old_rating = rating.query.filter_by(userid=current_user.id).first()
+        # forgot to put movieid filter so was deleting most recent rating regardless of movieid
+        old_rating = rating.query.filter_by(
+            userid=current_user.id, movieid=session.get("movie_id", None)
+        ).first()
         new_rating = rating(
             movieid=session.get("movie_id", None),
             userid=current_user.id,
@@ -225,6 +229,53 @@ def commentsandratings():
     # NB: DO NOT add an "index.html" file in your normal templates folder
     # Flask will stop serving this React page correctly
     return flask.render_template("index.html")
+
+
+@app.route("/returnalluserposts")
+@login_required
+def returnalluserposts():
+    # all_posts = {"movies":
+    #                 [
+    #                   "movieid": [
+    #                     "title": name
+    #                     "rating": 5
+    #                     "comments": []
+    # }
+    #                 ,
+
+    #                 "title": name
+    #                   "rating": 5
+
+    #                 ]
+    #             }
+
+    grouped_comments = {}
+    all_comments = comment.query.filter_by(userid=current_user.id)
+    for c in all_comments:
+        if c.movieid not in grouped_comments:
+            grouped_comments[c.movieid] = []
+        grouped_comments[c.movieid].append(c.comment)
+
+    movie_list = []
+    # check if comments are empty
+    all_ratings = rating.query.filter_by(userid=current_user.id)
+    for r in all_ratings:
+        movie_data = get_movie_data(r.movieid)
+        movie_title = movie_data["title"]
+        comment_list = []  # empty if there were no comments
+        # if there are comments get from grouped_comments
+        if r.movieid in grouped_comments:
+            comment_list = grouped_comments[r.movieid]
+        new_item = {
+            "movieid": r.movieid,
+            "title": movie_title,
+            "rating": r.rating,
+            "comments": comment_list,
+        }
+        movie_list.append(new_item)
+    # print(json.dumps(movie_list, indent=3))
+
+    return flask.jsonify(movie_list)
 
 
 @app.route("/login", methods=["GET", "POST"])
