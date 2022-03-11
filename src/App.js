@@ -200,7 +200,7 @@ function Welcome() {
   // to log out or go back to main page
   const [username, setUsername] = useState("User");
   useEffect(() => {
-    fetch('/returusernname').then(response => response.json()).then(data => setUsername(data["username"]));
+    fetch('/returnusername').then(response => response.json()).then(data => setUsername(data["username"]));
   }, []);
 
   return (

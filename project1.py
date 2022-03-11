@@ -286,7 +286,7 @@ def returnalluserposts():
     return flask.jsonify(movie_list)
 
 
-@app.route("/returusernname")
+@app.route("/returnusername")
 @login_required
 def returusernname():
     """Returns the username so the welcome div can display the proper name."""

@@ -1,5 +1,7 @@
+To see the page I made for this current milestone click the "SEE ALL POSTS" button near the Welcome message in the top right corner of the screen after getting the website running.
 # Heroku URL
 https://project1-dominickdileo.herokuapp.com/
+(current milestone not deployed)
 # Commit History
     I copied my milestone1 folder locally to work on milestone2 there, deleted the .git folder in the new directory, and re-initialized with git init. This was then pushed to 
     this remote repository. So there are no commits from milestone 1 here. Mr. Martin said this is ok on discord here https://discord.com/channels/928733838715289640/942873026083561513/945494866329227264
@@ -7,7 +9,8 @@ https://project1-dominickdileo.herokuapp.com/
 # Detailing How This Project Works
 ## General
     This project is a webpage that makes use of the Flask framework to run. Everytime the page is refreshed it will display a different 
-    random movie's information, a picture, and a wikipedia article link for the movie.
+    random movie's information, a picture, and a wikipedia article link for the movie. The user can post comments and make ratings. These will appear on the main screen,
+    and the user can go to a page where all comments and ratings they've made for all movies are shown.
 ## APIS
     I make use of APIs from The Movie Database(TMDB) and Wikipedia(Wiki). For TMDB, I used the Movies section of the 
     API to search for a movie based on movie_id. Using the poster_path info from the previous get request and getting 
@@ -17,7 +20,25 @@ https://project1-dominickdileo.herokuapp.com/
     of Wiki, and using the action query, info prop, and url inprop query parameters, I was actually able to get the 
     article URL. The TMDB API needs an API key, which is placed in a .env file and imported into the environment 
     variables and then used in the python files.
+## React
+    The page that shows all comments and ratings the user made uses React. This helps make better separation of
+    html into components amongst other benefits. I talk more about installation and using it below.
 ## Explaining Each File
+### App.js
+    This is the file with javscript and jsx code. It is what the index.html page is made from after typing npm run build.
+    There are 4 components. The main parent component(CommentsAndRatingsPage), the Movie component, the Comment component, and the 
+    Rating component. A fetch request in the CommentsAndRatingsPage gets a json from the returnalluserposts route talked about in the
+    project1.py description. map is used to create as many Movie components as there are movies rated/commented on by user.
+    The rating information is then passed down to the Rating component in each Movie component, and map is used again to 
+    create as many Comment components as there are comments by the user for that movie. States are used to keep the UI updated and 
+    functions tied to buttons are used to change the state as well as update the database through fetch POST requests. Comments in 
+    the code for App.js will provide more specific explanations for different parts.
+### App.css
+    I mainly just copied the css from the styles.css in the static folder so I could use the code with React and keep the
+    look of the website more consistent.
+### Other react related files
+    There are many files and folders such as all the others files in the src folder except App.js and App.css that I did 
+    not touch. When you create a react app, they will be made for you.
 ### project1.py
     This is the main file that is run with python3. It randomly chooses a movie id from a hardcoded list of movie 
     ids by making use of the Random libray. This file imports functions from tmdb.py and wiki.py. It passes the 
@@ -33,7 +54,8 @@ https://project1-dominickdileo.herokuapp.com/
     The flask_login library is used to login a user, with sessions.
     The flask_sqlalchemy is used to write in python and communicate with a database
 
-    5 addition routes now: rating, comment, login, signup, and logout
+    5 additional routes now: rating, comment, login, signup, and logout
+
     main page the / route:
         Now does a bunch of querys with sqlalchemy, such as getting all the comments and ratings for a particualar movie and passes that information to the index.html to populate information on the webpage.
     rating:
@@ -51,6 +73,32 @@ https://project1-dominickdileo.herokuapp.com/
         then logs in the user, then redirects to the main page
     logout:
         Logs user out, then redirects to login page
+
+
+
+
+    For milestone3:
+    Added routes to handle the back end for the React page:
+    6 additional routes now: commentsandratings, returnalluserposts, returnusername, ratingreact, commentupdatereact, and commentdeletereact
+
+    commentsandratings:
+        Renders React generated html page: index.html.
+    returnalluserposts:
+        Returns a json formatted list of all the comments and ratings
+        for every movie the current user has commented on or rated.
+    returnusername:
+        Returns the username so the welcome div can display the proper name.
+    ratingreact:
+        Will update the rating in the database made by the current user for a
+        specific movie matching the movieid passed in the POST request.
+    commentupdatereact:
+        Will update the specific comment in the database matching
+        the comment id passed in the POST request.
+    commentdeletereact:
+        Will delete the specific comment in the database matching
+        the comment id passed in the POST request.
+
+
 ### tmdb.py
     This file makes use of the API talked about above to return an image url and information about a movie given a 
     movie id. The requests library is used to make Get requests. Functions from the dotenv library are imported in
@@ -93,7 +141,7 @@ https://project1-dominickdileo.herokuapp.com/
 ## How To Get Website Running
 ### Installs
 #### Windows
-    From the setup repository posted by Mr. Martin:
+    From the setup repository posted by Mr. Martin https://github.com/csc4350-sp22/setup-and-demos/blob/main/csc-4350-setup.md:
     sudo apt-get update  # update your installer so the Pip installation works
     sudo apt install python3-pip  # install pip, which manages python packages
     pip3 install flask
@@ -104,11 +152,15 @@ https://project1-dominickdileo.herokuapp.com/
     sudo -u postgres psql  # just testing that psql is installed. You should get an interactive prompt. Quit by entering "\q"
     pip3 install psycopg2-binary
     pip3 install Flask-SQLAlchemy==2.1
-    If you would like to put on Heroku:
+
+    If you would like to put on Heroku(Current milestone is not deployed on heroku):
     sudo curl https://cli-assets.heroku.com/install.sh | sh # install Heroku
 
+
+    For react related things look in the setup repo linked above. 
+
 #### Mac
-    From the setup repository posted by Mr. Martin:
+    From the setup repository posted by Mr. Martin https://github.com/csc4350-sp22/setup-and-demos/blob/main/csc-4350-setup.md:
     python3 -m ensurepip --upgrade  # install pip, which manages python packages
     pip3 install flask
     pip3 install requests
@@ -120,9 +172,12 @@ https://project1-dominickdileo.herokuapp.com/
     pip3 install psycopg2-binary
     pip3 install Flask-SQLAlchemy==2.1
 
-    If you would like to put on Heroku:
+    If you would like to put on Heroku(Current milestone is not deployed on heroku):
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)  # install Homebrew
     brew tap heroku/brew && brew install heroku  # install Heroku CLI
+
+
+    For react related things look in the setup repo linked above. 
 
 ### Running After Installs
     You must have a .env file as described above. 
@@ -132,40 +187,43 @@ https://project1-dominickdileo.herokuapp.com/
     then "heroku config" to see your database url. 
     this goes in your .env file, but replace the text "postgres" with "postgresql"
 
-    To run locally, type python3 project1.py to start the web app. Then click on the link provided in the terminal
-    to see the website in your browser. 
+    After cloning this repository, run `npm ci` in that directory to pull in all the node packages you need.(this 
+    repository does not have all the necessary React related files as is). After this, type `npm run build`, which 
+    makes the index.html file and builds React related things. Finally type `python3 project1.py` to start the web app. 
+    Then click on the link provided in the terminal to see the website in your browser. To see the page I made for
+    this current milestone click the "SEE ALL POSTS" button near the Welcome message in the top right corner 
+    of the screen.
 
-    To put on Heroku, you must type "heroku login -i" to login. Then "heroku create" to make an app. Then "git push heroku main" to push your files onto heroku. You must put you api key in the settings -> config of your app on heroku's website since the .env file is not pushed. After this, just go on the url for your app and it should work. 
+    (CURRENT MILESTONE IS NOT DEPLOYED ON HEROKU)
 
 # Technical Issues I Encounterd
-1. I tried to put all the database table classes in a separate python file called models.py. But I would get 
-circular import errors when trying to import into project1.py since the models.py file also imported from project1.py. In the end my project does not use this models.py file and just has the 
-classes in the main project1.py file. Mr. Martin said this is ok too.
-2. I did not understand what the user class was supposed to be for flask login. I tried to just have it inherit from UserMixin like the documentation said, but according to the teacher,
-it was actually supposed to inherit from db.model and is a table for the database too. So after not making progress for a while I finally got it all working when he told me that. Another thing I did not understand was what the user_loader callback did in the documentation. It did return User.get(user_id), so I was trying to add a .get function to my user class before the 
-teacher explained what the user class is. Based on what he said and the other example link for flask login provided in the milestone2 instructions. I finally understood that this line return User.get(user_id) actually queries the database for the user with user_id as its id. So I did not need to add a .get function
-3. I called a table user which is reserved keyword. So whenever I tried to run psql queries from the terminal after typing heroku pg:psql, I would run into issues. I asked about it
-on discord and Mr. Martin and a student replied telling me its a reserved keyword. So I dropped the table from the database and changed the name to profile instead, which is not reserved.
+1. I was having trouble combining the starter code provided with my milestone 2 code. I wasn't sure what exactly I was supposed 
+to change about my old code. I manually copied the content from my homework 7 code, since that uses the same starter code. I had to
+make it so my old styles.css and the starter code's "static/react/" folder were both in the same single "static" folder. I had 
+an idea about how to use blueprint and after talking to some guy in the office hours(I can't remember his name), he said the way 
+I was thinking is what he did. So I just added a few lines from the starter code and kept most of my old code the same. Here is a 
+discord post I made describing it in more detail: https://discord.com/channels/928733838715289640/946909452760657961/950841488550555708
+2. I was not sure how to properly make the json containing all posts on the backend to send to the react page. I went to John's office hours 
+and he wrote some code/pseudocode that helped me create good data. The code basically makes a list where each index contains a dictionary that 
+corresponds to one movie the user rated/commented on. Each dictionary contains the keys movieid, title, rating, and comments. comments is a list of dictionaries. 
+And each dictionary contains a comment id and the actual comment.
+3. Part of my code makes a state in a child component out of the props passed down by its parent. This caused unexpected issues. The code I wrote that used those states
+would produce errors saying something like the state variable was undefined. After some research I learned there can be some delay when setting a state from
+props. I ended up using useEffect. An example for updating a state containing the rating is shown below. Whenever the props.rating was changed(based on whats in []), 
+the state for rating would be changed with setRating. This way, even with a delay, eventually this code would properly update the state.
+    ```
+    useEffect(() => {
+        setRating(props.rating);
+    }, [props.rating]);
+    ```
+# What was the hardest part of the project for you, across all milestones? What is the most useful thing you learned, across all milestones?
+I'd say the hardest part of the project was in this current milestone. Getting all the parent components to work with the children components was hard for me.
+As I said in technical issue 2, getting the proper data format was tricky. Then actually parsing it correctly on the React side and putting it into states then 
+passing that information down to children components was difficult. I had very little experience with React before this semester, so it took some time and practice 
+to get more used to React's way of using html and components. Another part of the project I thought was pretty hard was using flask login. I wasn't sure how to 
+get it working and I felt like the documentation wasn't super helpful. But now that I got it working it doesn't seem to bad.
 
-
-# How did your experience working on this milestone differ from what you pictured while working through the planning process? What was unexpectedly hard? Was anything unexpectedly easy?
-    I did not expect this project to take so long. I put in a decent amount of time and did not procrastinate a lot, but still am finishing up the day its due. The flask login part took 
-    longer than I thought. As I talked about in the techincal issues section above, I was confused about what the User class was supposed to do or how it would relate to the database. But 
-    as I said above, after a while I understood it better and finally got it all working. I wouldn't say anything was unexpectedly easy in this project.
-
-# Current Problems and Improvements I Would Make
-## Problem
-    The center div containing all the content widens to fit the content. So if the tagline is really long, then the center div will expand a lot. I want to make the center div have a max width so regardless of the tagline length, the div looks the same. The tagline should instead wrap to the next line.
-    The user can not make a comment without rating. This is to avoid an issue with how I retrieve information from the database. The query I use will not return a comment unless there is a 
-    rating. So I could do some more complicated coding to allow for this, but for now it works, a user just needs to rate too.
-## Improvements I Would Make
-    Right now there are only 3 hardcoded movie ids that are randomly displayed. 
-    I would like to add more, or make it so a random movie id is chosen from amongst all of the ids on TMDB. 
-    
-    Recommend a random movie based on a genre given by the user.
-
-    Another Add a small snippet of information from the wikipedia article too, so 
-    that there is a brief description of the movie.
-
-# Stretch features
-    I'm not sure if this counts, but my code gets the average of all ratings for the movie and shows the average rating on the website.
+The most useful thing I learned for this project was probably getting better at using python in general. I don't have much experience with python and I've heard 
+it's really popular so it's nice to get more experience. I already had experience making a website that modified a database, though not with flask or sqlalchemy, 
+so I appreciate that I learned that too, but not as much as just python in general. React is also pretty useful, if I decide to make websites in the future outside 
+of class or school, I might consider using React.
