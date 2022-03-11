@@ -223,6 +223,9 @@ def comment_post():
     return flask.redirect(flask.url_for("index"))
 
 
+# start react related routes#
+
+
 @bp.route("/commentsandratings")
 @login_required
 def commentsandratings():
@@ -254,7 +257,7 @@ def returnalluserposts():
     for c in all_comments:
         if c.movieid not in grouped_comments:
             grouped_comments[c.movieid] = []
-        grouped_comments[c.movieid].append(c.comment)
+        grouped_comments[c.movieid].append({"id": c.id, "comment": c.comment})
 
     movie_list = []
     # check if comments are empty
@@ -273,9 +276,55 @@ def returnalluserposts():
             "comments": comment_list,
         }
         movie_list.append(new_item)
-    # print(json.dumps(movie_list, indent=3))
+    print(json.dumps(movie_list, indent=3))
 
     return flask.jsonify(movie_list)
+
+
+@app.route("/returusernname")
+@login_required
+def returusernname():
+    username = {"username": current_user.username}
+    # print(username)
+    return flask.jsonify(username)
+
+
+@app.route("/ratingreact", methods=["GET", "POST"])
+@login_required
+def updaterating():
+    if flask.request.method == "POST":
+        data = flask.request.json
+        old_rating = rating.query.filter_by(
+            userid=current_user.id, movieid=data["movieid"]
+        ).first()
+        new_rating = rating(
+            movieid=data["movieid"],
+            userid=current_user.id,
+            rating=data["rating"],
+        )
+        if old_rating is not None:  # only allow 1 rating per user
+            db.session.delete(old_rating)
+        db.session.add(new_rating)
+        db.session.commit()
+
+        # print(data)
+    return flask.jsonify(1)
+
+
+@app.route("/commentupdatereact", methods=["GET", "POST"])
+@login_required
+def updatecomment():
+    if flask.request.method == "POST":
+        data = flask.request.json
+        the_comment = comment.query.filter_by(id=data["id"]).first()
+        the_comment.comment = data["comment"]
+        db.session.commit()
+
+        # print(data)
+    return flask.jsonify(1)
+
+
+# end react related routes#
 
 
 @app.route("/login", methods=["GET", "POST"])
