@@ -16,7 +16,8 @@ function CommentsAndRatingsPage() {
   return (
     <div>
       <div className="center_div">
-        <h1>Comments And Ratings</h1>
+        <h1><u>Comments And Ratings</u></h1>
+        <hr></hr>
         {/* ? to make sure list exists before trying to map. avoids error */}
         {movie_list?.map(movie => <Movie movieid={movie.movieid} title={movie.title} rating={movie.rating} comments={movie.comments} />)}
       </div>
@@ -28,9 +29,11 @@ function CommentsAndRatingsPage() {
 function Movie(props) {
   const [rating, setRating] = useState(props.rating);
   const [comments, setComments] = useState(props.comments);
-  var str = JSON.stringify(comments, null, 2);
-  console.log(str);
+  // var str = JSON.stringify(comments, null, 2);
+  // console.log(str);
 
+  //used useEffect because there is some delay before props update. So this
+  //sets the states when the props is finally loaded and thus changed
   useEffect(() => {
     setRating(props.rating)
   }, [props.rating]);
@@ -50,22 +53,30 @@ function Movie(props) {
       console.log('Success:', data);
     });
 
-    console.log("in movie comp. newRating: " + newRating);
+    // console.log("in movie comp. newRating: " + newRating);
     //finally set the state for rating after database update
     setRating(newRating);
+    alert("Rating Updated");
   }
 
+  // console.log("length " + comments.length);
+  console.log("type " + typeof comments);
+  if (typeof (comments) != "undefined") {
+    console.log("length " + comments.length);
+  }
   return (
     <div>
+      <br></br>
       <h2 className="small_margin">{props.title}</h2>
       <h5 className="small_margin">Movie ID: {props.movieid}</h5>
       <br></br>
 
       <Rating rating={rating} onClickRating={handleClickRating} />
       <br></br>
-
-      {comments?.map(c => <Comment comment={c.comment} id={c.id} />)}
-
+      <h5>Comments</h5>
+      {/* is the state comments undefined? then make empty html, otherwise, is comments length 0? then show "No Comments", otherwise map each comment to a Comment component */}
+      {typeof (comments) != "undefined" ? (comments.length === 0) ? <p>No Comments</p> : comments?.map(c => <Comment comment={c.comment} id={c.id} />) : <></>}
+      <hr class="halfhr"></hr>
     </div>
   )
 }
@@ -136,27 +147,48 @@ function Comment(props) {
       console.log('Success:', data);
     });
 
-
+    alert("Comment Updated");
     //alert?
   }
 
   function handleClickDelete() {
+    //send comment id to delete in route
+    const data = { id: props.id };
+    fetch('/commentdeletereact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(response => response.json()).then(data => {
+      console.log('Success:', data);
+    });
 
+    //set to true
+    setDeleted(true);
+    alert("Comment Deleted");
   }
 
-  return (
-    <div class="comment_div">
-      <div class="comment_text_div">
-        {/* {props.comment} */}
-        <input type="text" ref={inputRef} />
-        <br></br>
-        <button onClick={handleClickUpdate} >Update</button>
-        <br></br>
-        <button onClick={handleClickDelete} >Delete</button>
+  if (!IsDeleted) {
+    return (
+      <div>
+        <div class="comment_div">
+          {/* {props.comment} */}
+          <input type="text" ref={inputRef} />
+          <br></br>
+          <button onClick={handleClickUpdate} >Update</button>
 
+          <button onClick={handleClickDelete} >Delete</button>
+        </div>
+        <br></br>
       </div>
-    </div>
-  )
+    )
+  }
+  else {
+    return (
+      <></>
+    )
+  }
 }
 
 function Welcome() {
@@ -171,6 +203,9 @@ function Welcome() {
       <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT" name="submit"></input>
       </form>
+      <a href="/">
+        <input type="submit" value="MAIN PAGE" />
+      </a>
     </div>
   )
 }

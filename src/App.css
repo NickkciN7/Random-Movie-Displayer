@@ -55,7 +55,9 @@ body {
 .smallhr {
   width: 25%;
 }
-
+.halfhr {
+  width: 50%;
+}
 .small_margin {
   margin: 2px;
 }

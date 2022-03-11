@@ -2,54 +2,54 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href={{ url_for( 'static', filename='style.css' ) }} />
+    <link rel="stylesheet" href={{ url_for( 'static' , filename='style.css' ) }} />
 </head>
 
 <body>
     <!-- maybe put Random movie displayer at top in center above "center div" and the welcome and logout to right
     corner. both in their own horizontal div? -->
     <!-- split rating and comment into own forms -->
-    <div class = "center_div">
+    <div class="center_div">
         <h1><u>Random Movie Displayer!</u></h1>
         <hr>
         <h2 class="small_margin">{{movie_title}}</h2>
         <h5 class="tagline_margin">
-            {% if tagline == "" %} 
-                No Tagline
+            {% if tagline == "" %}
+            No Tagline
             {% else %}
-                "{{tagline}}" 
+            "{{tagline}}"
             {% endif %}
-            
+
         </h5>
-        <h6>Genres: 
+        <h6>Genres:
             {% for i in range(genres_length) %}
-                {% if i == genres_length-1 %} 
-                    {{genres[i]}}
-                {% else %}
-                    {{genres[i]}}, 
-                {% endif %}    
+            {% if i == genres_length-1 %}
+            {{genres[i]}}
+            {% else %}
+            {{genres[i]}},
+            {% endif %}
             {% endfor %}
         </h6>
-        <img src = {{image_url}}>
+        <img src={{image_url}}>
         <h6 class="small_margin">
-            Average Rating: {% if average_rating == -1 %} 
-                                None
-                            {% else %}
-                                {{average_rating}}
-                            {% endif %}
+            Average Rating: {% if average_rating == -1 %}
+            None
+            {% else %}
+            {{average_rating}}
+            {% endif %}
         </h6>
-        
+
         <br>
-        <a href = {{wiki_url}} > Click Here for Wikipedia Page</a>
+        <a href={{wiki_url}}> Click Here for Wikipedia Page</a>
         <hr>
         <br>
         <h2>Comment and Rate</h2>
-        <form method = "POST" action="/rating">
-            Current Rating: {% if user_rating == -1 %} 
-                                None
-                            {% else %}
-                                {{user_rating}}
-                            {% endif %}
+        <form method="POST" action="/rating">
+            Current Rating: {% if user_rating == -1 %}
+            None
+            {% else %}
+            {{user_rating}}
+            {% endif %}
             <br>
             New Rating: <select name="rating">
                 <option value="1">1</option>
@@ -62,25 +62,25 @@
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
-              </select>
+            </select>
             <br><br>
             <input type="submit" value="Post" name="submit">
         </form>
 
         <hr class="smallhr">
 
-        <form method = "POST" action="/comment">
-            <textarea rows="4" cols="40" name = "comment">Comment here</textarea>
+        <form method="POST" action="/comment">
+            <textarea rows="4" cols="40" name="comment">Comment here</textarea>
             <br><br>
             <input type="submit" value="Post" name="submit">
         </form>
         {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <b class="red">{{ message }}</b>
-                {% endfor %}
-                <br><br>
-            {% endif %}
+        {% if messages %}
+        {% for message in messages %}
+        <b class="red">{{ message }}</b>
+        {% endfor %}
+        <br><br>
+        {% endif %}
         {% endwith %}
         <hr>
         {% for index in range(comment_count) %}
@@ -88,12 +88,12 @@
             <div class="top_left">
                 {{comment_info[index].username}}
                 <br>
-                Current Rating: {% if comment_info[index].rating == -1 %} 
-                                    None
-                                {% else %}
-                                    {{comment_info[index].rating}}
-                                {% endif %} 
-                
+                Current Rating: {% if comment_info[index].rating == -1 %}
+                None
+                {% else %}
+                {{comment_info[index].rating}}
+                {% endif %}
+
             </div>
             <div class="comment_text_div">
                 {{comment_info[index].comment.comment}}
@@ -104,9 +104,12 @@
     </div>
     <div class="welcome">
         <h3 class="small_margin">Welcome {{ current_user.username }}</h3>
-        <form method = "POST" action="/logout">
+        <form method="POST" action="/logout">
             <input type="submit" value="LOGOUT" name="submit">
         </form>
+        <a href="/commentsandratings">
+            <input type="submit" value="SEE ALL POSTS" />
+        </a>
     </div>
 </body>
 

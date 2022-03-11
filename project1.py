@@ -276,7 +276,7 @@ def returnalluserposts():
             "comments": comment_list,
         }
         movie_list.append(new_item)
-    print(json.dumps(movie_list, indent=3))
+    # print(json.dumps(movie_list, indent=3))
 
     return flask.jsonify(movie_list)
 
@@ -313,7 +313,7 @@ def updaterating():
 
 @app.route("/commentupdatereact", methods=["GET", "POST"])
 @login_required
-def updatecomment():
+def commentupdate():
     if flask.request.method == "POST":
         data = flask.request.json
         the_comment = comment.query.filter_by(id=data["id"]).first()
@@ -321,6 +321,18 @@ def updatecomment():
         db.session.commit()
 
         # print(data)
+    return flask.jsonify(1)
+
+
+@app.route("/commentdeletereact", methods=["GET", "POST"])
+@login_required
+def commentdelete():
+    if flask.request.method == "POST":
+        data = flask.request.json
+        the_comment = comment.query.filter_by(id=data["id"]).first()
+        db.session.delete(the_comment)
+        db.session.commit()
+
     return flask.jsonify(1)
 
 
