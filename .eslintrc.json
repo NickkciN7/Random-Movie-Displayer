@@ -1,0 +1,36 @@
+{
+    "extends": "airbnb",
+    "ignorePatterns": [
+        "App.test.js",
+        "index.js",
+        "reportWebVitals.js",
+        "setupTests.js"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "App.js"
+            ],
+            "rules": {
+                "react/no-array-index-key": "off",
+                "react-hooks/exhaustive-deps": "off",
+                "react/jsx-filename-extension": "off",
+                "react/destructuring-assignment": "off",
+                "react/jsx-one-expression-per-line": "off",
+                "react/button-has-type": "off",
+                "react/jsx-no-bind": "off",
+                "react/prop-types": "off",
+                "quotes": "off",
+                "camelcase": "off",
+                "arrow-parens": "off",
+                "no-alert": "off",
+                "no-console": "off",
+                "dot-notation": "off"
+            }
+        }
+    ],
+    "globals": {
+        "fetch": false,
+        "alert": false
+    }
+}

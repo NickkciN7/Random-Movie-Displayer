@@ -1,4 +1,4 @@
-# pylint: disable=C0103,C0115,E1101,R0903
+# pylint: disable=C0103,C0115,E1101,R0903,W0611
 """This python file is the main file run that brings together all the
 other files to make a webpage. It calls functions from the other python
 files and passes information to a html page. It then at the end calls
@@ -7,10 +7,10 @@ app.run to actually start running the webpage."""
 import os
 import random
 
+import json
 import flask
 from flask import Flask, render_template, session
 import flask_login
-import json
 from flask_login import current_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
@@ -229,6 +229,8 @@ def comment_post():
 @bp.route("/commentsandratings")
 @login_required
 def commentsandratings():
+    """Renders react generated html page: index.html."""
+
     # NB: DO NOT add an "index.html" file in your normal templates folder
     # Flask will stop serving this React page correctly
     return flask.render_template("index.html")
@@ -237,6 +239,9 @@ def commentsandratings():
 @app.route("/returnalluserposts")
 @login_required
 def returnalluserposts():
+
+    """Returns a json formatted list of all the comments and ratings
+    for every movie the current user has commented on or rated."""
     # all_posts = {"movies":
     #                 [
     #                   "movieid": [
@@ -284,6 +289,8 @@ def returnalluserposts():
 @app.route("/returusernname")
 @login_required
 def returusernname():
+    """Returns the username so the welcome div can display the proper name."""
+
     username = {"username": current_user.username}
     # print(username)
     return flask.jsonify(username)
@@ -292,6 +299,9 @@ def returusernname():
 @app.route("/ratingreact", methods=["GET", "POST"])
 @login_required
 def updaterating():
+    """Will update the rating in the database made by the current user for a
+    specific movie matching the movieid passed in the POST request."""
+
     if flask.request.method == "POST":
         data = flask.request.json
         old_rating = rating.query.filter_by(
@@ -314,6 +324,9 @@ def updaterating():
 @app.route("/commentupdatereact", methods=["GET", "POST"])
 @login_required
 def commentupdate():
+    """Will update the specific comment in the database matching
+    the comment id passed in the POST request."""
+
     if flask.request.method == "POST":
         data = flask.request.json
         the_comment = comment.query.filter_by(id=data["id"]).first()
@@ -327,6 +340,9 @@ def commentupdate():
 @app.route("/commentdeletereact", methods=["GET", "POST"])
 @login_required
 def commentdelete():
+    """Will delete the specific comment in the database matching
+    the comment id passed in the POST request."""
+
     if flask.request.method == "POST":
         data = flask.request.json
         the_comment = comment.query.filter_by(id=data["id"]).first()
@@ -347,13 +363,16 @@ def login():
     if flask.request.method == "POST":
         session["posted"] = "false"
         username_form = flask.request.form["username"]
-        user_query = profile.query.filter_by(username=username_form).first()
-        if user_query is None:
-            flask.flash("Username Not Found")
+        if username_form == "Enter Username Here":
+            flask.flash("Do Not Use Default Message As Username")
         else:
-            flask_login.login_user(user_query)
-            # flask.flash("you signed in!")
-            return flask.redirect(flask.url_for("index"))
+            user_query = profile.query.filter_by(username=username_form).first()
+            if user_query is None:
+                flask.flash("Username Not Found")
+            else:
+                flask_login.login_user(user_query)
+                # flask.flash("you signed in!")
+                return flask.redirect(flask.url_for("index"))
 
     return render_template("login.html")
 
@@ -366,15 +385,18 @@ def signup():
     if flask.request.method == "POST":
         session["posted"] = "false"
         username_form = flask.request.form["username"]
-        user_query = profile.query.filter_by(username=username_form).first()
-        if user_query is None:
-            # user name not taken so make new profile
-            new_profile = profile(username=username_form)
-            db.session.add(new_profile)
-            db.session.commit()
-            flask_login.login_user(new_profile)
-            return flask.redirect(flask.url_for("index"))
-        flask.flash("Username Already Taken")
+        if username_form == "Enter Username Here":
+            flask.flash("Do Not Use Default Message As Username")
+        else:
+            user_query = profile.query.filter_by(username=username_form).first()
+            if user_query is None:
+                # user name not taken so make new profile
+                new_profile = profile(username=username_form)
+                db.session.add(new_profile)
+                db.session.commit()
+                flask_login.login_user(new_profile)
+                return flask.redirect(flask.url_for("index"))
+            flask.flash("Username Already Taken")
 
     return render_template("signup.html")
 
